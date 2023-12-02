@@ -1,3 +1,5 @@
+from random import choice
+
 gallows = [
     [" ", "+", "-", "+", " "],
     [" ", "|", " ", "|", " "],
@@ -35,47 +37,67 @@ def draw_gallows(param=0):
 
 # print(draw_gallows())
 
-word = "ababagalamaga"
-errors = 0
+def get_random_word() -> str:
+    with open("words.txt") as file:
+        # return file.read().split("\n") 
 
-question = []
-for i in word:
-        question.append("_")
+        # return file.readlines()  need SANITIZE!! 
+        result = []
+        counter = 0
+        while counter <= 100:
+            data = file.readline()
+            if not data:
+                break
+            counter += 1
+            result.append(data.replace("\n", "")) 
+    return choice(result)
+
+def main():
+    word = get_random_word() # сюда передавать PATH к файлу со словами
+    errors = 0
+
+    question = []
+    for i in word:
+            question.append("_")
 
 
-print(draw_gallows(errors)[0])
-print(" ".join(question))
-
-while True:
-    user_input = input("enter letter: ")
-    if not user_input:
-        break
-    if len(user_input) > 1:
-        print("enter only 1 letter")
-        continue
-
-    if user_input in word: # function
-        indexes = []
-        # start = 0
-        for index, letter in enumerate(word):
-            if user_input ==  letter:
-                indexes.append(index)
-
-        # index = word.index(user_input)
-        for index in indexes:
-            question[index] = user_input
-        # print(" ".join(question))
-    else:
-        errors += 1
-    
-    str_gallows, last_step = draw_gallows(errors)
-    print(str_gallows)
+    print(draw_gallows(errors)[0])
     print(" ".join(question))
 
-    if last_step:
-        print("You loose")
-        break
+    while True:
+        user_input = input("enter letter: ")
+        if not user_input:
+            break
+        if len(user_input) > 1:
+            print("enter only 1 letter")
+            continue
 
-    if "".join(question) == word:
-        print("You win")
-        break
+        if user_input in word: # function
+            indexes = []
+            # start = 0
+            for index, letter in enumerate(word):
+                if user_input ==  letter:
+                    indexes.append(index)
+
+            # index = word.index(user_input)
+            for index in indexes:
+                question[index] = user_input
+            # print(" ".join(question))
+        else:
+            errors += 1
+        
+        str_gallows, last_step = draw_gallows(errors)
+        print(str_gallows)
+        print(" ".join(question))
+
+        if last_step:
+            print("You loose")
+            print(f"The word is {word}")
+            break
+
+        if "".join(question) == word:
+            print("You win")
+            break
+
+if __name__ == "__main__":
+    main()
